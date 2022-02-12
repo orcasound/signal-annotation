@@ -2,6 +2,8 @@
 Add soundfile and numpy to Python environment   pip -m install soundfile  and pip -m install numpy
 Add    mutagen         pip -m install mutagen
 Add    matplotlib      pip -m iinstall matplotlib
+
+2/12/2022 15:57
 """
 
 import soundfile as sf
