@@ -57,7 +57,7 @@ class click():
     def __init__(self, peak, freq, width, wavSec1, wavSec2, idx1, idx2, wavfile):
         self.peak = peak
         self.freq = freq
-        self.width = width
+        self.width = width   # width and other values along time axis are in seconds
         self.wavSec1 = wavSec1
         self.wavSec2 = wavSec2
         self.idx1 = idx1
@@ -73,13 +73,13 @@ class bout():
         self.boutIdx1 = clickList[0].idx1
         self.boutIdx2 = clickList[-1].idx2
         self.gapList = []  # we will initialize this when first gap comes in
-        self.gapAve = 0
+        self.gapAve = 0   #gaps are in seconds
         self.gapStd = 10    # these will be updated as clickList develops
         self.peakAve = 0.0
         self.peakStd = 0.0
         self.freqAve = 0.0
         self.freqStd = 0.0
-        self.widthAve = 0.0
+        self.widthAve = 0.0  #widths are in seconds
         self.widthStd = 0.0
         self.boutConstancy = 0
         self.boutClass = 'unclassified'
@@ -256,6 +256,15 @@ def getGapList(cList):
         gapList.append(cList[i].idx1 - cList[i - 1].idx2)  # g_maxClickGap_samples
     gapMean = np.mean(gapList)
     gapStd = max(np.std(gapList), gapMean/100)
+    # if gapList[0]>gapMean + 3*gapStd:
+    #     print(gapList)
+    #     print(cList[0].idx1, cList[0].idx2)
+    #     cList.pop(0)
+    #     print(cList[0].idx1, cList[0].idx2)
+    #     print("-------------")
+    #     getGapList(cList)   ### N.B . should have length test here
+    # gapMean = np.mean(gapList)
+    # gapStd = max(np.std(gapList), gapMean/100)
     gapRatio = gapMean/gapStd
     return gapMean, gapStd, gapRatio
 
@@ -284,9 +293,19 @@ def buildBouts(thisClick, clickList, bouts_open):
     if (len(bouts_open) == 0) or (bestBout == None):
         if len(clickList) < 4:   # start building up a new initial click of 4 clicks
             clickList.append(thisClick)
+            if len(clickList) == 4:
+                #see if first click should be dropped because gap is Too Large
+                gapList = []
+                for i in range(1, len(clickList)):
+                    gapList.append(clickList[i].idx1 - clickList[i - 1].idx2)
+                if DEBUG == 1:
+                    print("gapList", gapList)
+                if gapList[0] > 2.5* (gapList[1]+gapList[2])/2: #  N.B.  why 2.5???
+                    clickList.pop(0)
             return clickList, bouts_open
         else:
             clickList.append(thisClick)
+
             gapMean, gapStd, gapRatio = getGapList(clickList)
 
 ###            print('gap ratio', gapRatio, len(clickList))
@@ -299,6 +318,7 @@ def buildBouts(thisClick, clickList, bouts_open):
             return [], bouts_open
 
 def checkBoutCompletion(idx1, openBoutList, finalBoutList):
+
     for bout in openBoutList:
         finalGap = idx1 - bout.clickList[-1].idx2
         if finalGap > g_maxClickGap_samples:
@@ -322,6 +342,7 @@ g_maxClickGap_samples = int(g_samplerate * g_maxClickGapSecs)
 finalBoutList = []       # these are completed bouts where a bout is a group of related clicks
 openBoutList = []   # these are bouts that are being formed but are not yet closed
 #########################################
+DEBUG = 0
 clickList = []
 wavIdx = 0
 Done = False
@@ -337,10 +358,10 @@ with sf.SoundFile(wavfile) as f:
             if wavIdx > len(f) - g_block_size:   # Finished with wav file
                 Done = True
         else:
-            print("idx=", wavIdx, thisClick.idx1, "jump wavIdx=", thisClick.idx1 - wavIdx)
+            if DEBUG == 1:
+                print("idx=", wavIdx, thisClick.idx1, "jump wavIdx=", thisClick.idx1 - wavIdx)
             checkBoutCompletion(thisClick.idx1, openBoutList, finalBoutList)
             clickList, openBoutList = buildBouts(thisClick, clickList, openBoutList)
-
             if direction == 1:
                 wavIdx = thisClick.idx2 + 1  # set wav file pointer to end of thisClick
 
