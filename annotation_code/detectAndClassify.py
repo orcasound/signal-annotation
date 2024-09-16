@@ -290,9 +290,9 @@ def buildBouts(thisClick, clickList, bouts_open):
             gapMean, gapStd, gapRatio = getGapList(clickList)
 
 ###            print('gap ratio', gapRatio, len(clickList))
-            if gapRatio < 2:
-                clickList.pop(0)   # drop the earliest click in the list
-                return clickList, bouts_open
+            # if gapRatio < 2:
+            #     clickList.pop(0)   # drop the earliest click in the list
+            #     return clickList, bouts_open
             newBout = bout(g_samplerate, clickList)
             bouts_open.append(newBout)
             print("starting a new bout at", newBout.clickList[0].idx1, newBout.clickList[-1].idx2)
@@ -337,7 +337,7 @@ with sf.SoundFile(wavfile) as f:
             if wavIdx > len(f) - g_block_size:   # Finished with wav file
                 Done = True
         else:
-###            print("idx=", wavIdx, thisClick.idx1, "jump=", thisClick.idx1 - wavIdx)
+            print("idx=", wavIdx, thisClick.idx1, "jump wavIdx=", thisClick.idx1 - wavIdx)
             checkBoutCompletion(thisClick.idx1, openBoutList, finalBoutList)
             clickList, openBoutList = buildBouts(thisClick, clickList, openBoutList)
 
