@@ -29,9 +29,11 @@ Scan wav file in blocks of wav data (g_block_size):
 ################################################################  USER PARAMETERS ####################
 ######################################################################################################
 
-wavfile = "/home/val/PycharmProjects/AEproject/wavFiles/used/OS_9_12_2021_09_07_00_.wav"
-wavfile="/home/val/PycharmProjects/AEproject/wavFiles/used/OS_9_12_2021_09_37_00_.wav"
-wavfile="/home/val/PycharmProjects/AEproject/wavFiles/OS_9_12_2021_09_37_00_Tst.wav"
+# wavfile = "/home/val/PycharmProjects/AEproject/wavFiles/used/OS_9_12_2021_09_07_00_.wav"
+# wavfile="/home/val/PycharmProjects/AEproject/wavFiles/used/OS_9_12_2021_09_37_00_.wav"
+# wavfile="/home/val/PycharmProjects/AEproject/wavFiles/OS_9_12_2021_09_37_00_Tst.wav"
+
+wavfile = "../clickFile/OS_9_12_2021_09_37_00__1min.wav"  ###  a very short file for test purposes
 
 g_block_size = 2000
 ## Peak triggering parameters
