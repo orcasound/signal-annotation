@@ -33,8 +33,8 @@ Scan wav file in blocks of wav data (g_block_size):
 # wavfile="/home/val/PycharmProjects/AEproject/wavFiles/used/OS_9_12_2021_09_37_00_.wav"
 # wavfile="/home/val/PycharmProjects/AEproject/wavFiles/OS_9_12_2021_09_37_00_Tst.wav"
 
-wavfile = "../clickFile/OS_9_12_2021_09_37_00__1min.wav"  ###  a very short file for test purposes
-
+wavfile = "../clickFiles/OS_9_12_2021_09_37_00__1min.wav"  ###  a very short file for test purposes
+wavfile = "../clickFiles/OS_9_15_2021_09_23_00__3min.wav"
 g_block_size = 2000
 ## Peak triggering parameters
 g_channelchoice = -1    # if stereo, pick channel with higher amplitude
@@ -48,9 +48,10 @@ g_minClicksInBout = 4
 g_maxClickGapSecs = 2   # click lists and bouts end when next click comes in at least this much later than previous click in list
 
 #classification  buzz, slow, fast based on interclick intervals
-g_maxBuzzGapSecs = 0.03
-g_maxFastGapSecs = 0.35
-g_maxSlowGapSecs = 0.75
+g_maxBuzzGapSecs = 0.005   # buzz has delta T less than this 5 ms rate
+g_maxFastGapSecs = 0.35    # fast clicks 3 per sec or higher rate
+g_maxSlowGapSecs = 1.0     # slow clicks up to this gap length
+                           # intervals longer are noted as 'unclassified'
 #########################################################################################################
 ################################################################
 class click():
